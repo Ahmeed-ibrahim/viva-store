@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="ahmed ibrahim" name="author" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Viva Store</title>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <h1>viva store</h1>
+      <button id="darkModeToggle">🌙</button>
+      </div>
+      <ul>
+        <li>الرئيسية</li>
+        <li>المنتجات</li>
+        <li>العروض</li>
+        <li>تواصل معنا</li>
+      </ul>
+      <div class="cart-icon">🛒 <span id="cartCount">0</span></div>
+    </nav>
+    <hr />
+    <main class="welcome">
+      <div class="welcome-1">
+        <h1>اهلا في فيفا ستور</h1>
+        <p>بنقدم اعلا كواليتي باحسن سعر ممكن</p>
+        <button>ابدا التسوق</button>
+      </div>
+    </main>
+    <section class="products">
+      <div class="product" id="product-1">
+        <img src="img/Sweatpants.png" alt="منتج1" />
+        <div class="rating">★★★★★</div>
+        <h3>Sweatpants</h3>
+        <p>250 EPG</p>
+        <p>خامه من القطن الفاخر</p>
+        <button>شراء الان</button>
+      </div>
+
+      <div class="product" id="product-2">
+        <img src="img/T-Shirt.png" alt="منتج 2" />
+        <div class="rating">★★★★★</div>
+        <h3>T-shirt</h3>
+        <p>250 EPG</p>
+        <p>تصميم مريح ومرن</p>
+        <button>شراء الان</button>
+      </div>
+
+      <div class="product" id="product-3">
+        <img src="img/Hoodie.png" alt="منتج 3" />
+        <div class="rating">★★★★★</div>
+        <h3>Hoodies</h3>
+        <p>300 EPG</p>
+        <p>تصميم مريح ومقاوم للماء</p>
+        <button>شراء الان</button>
+      </div>
+
+      <div class="product" id="product-4">
+        <img src="img/cap.png" alt="منتج 4" />
+        <div class="rating">★★★★★</div>
+        <h3>Cap</h3>
+        <p>100 EPG</p>
+        <p>مصمم للحفاظ علي الشعر</p>
+        <button>شراء الان</button>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="footer-content">
+        <h2>Viva Store</h2>
+        <p>افضل جودة باحسن سعر</p>
+
+        <div class="socials">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">WhatsApp</a>
+        </div>
+
+        <p class="copy">© 2026 Viva Store - All Rights Reserved</p>
+      </div>
+    </footer>
+    <script>
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let cartCount = document.getElementById("cartCount");
+
+      function updateCartCount() {
+        if (cartCount) {
+          cartCount.innerText = cart.length;
+        }
+      }
+
+      function openCart() {
+        document.getElementById("cartPopup").style.display = "flex";
+        displayCart();
+      }
+
+      function closeCart() {
+        document.getElementById("cartPopup").style.display = "none";
+      }
+
+      function displayCart() {
+        let cartItems = document.getElementById("cartItems");
+        let totalPrice = document.getElementById("totalPrice");
+        cartItems.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item, index) => {
+          let price = parseInt(item.price);
+          total += price;
+
+          cartItems.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name}</span>
+        <span>${item.price}</span>
+        <button onclick="removeItem(${index})">❌</button>
+      </div>
+    `;
+        });
+
+        totalPrice.innerText = "الاجمالي: " + total + " EGP";
+      }
+
+      function removeItem(index) {
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+        displayCart();
+      }
+
+      function clearCart() {
+        cart = [];
+        localStorage.removeItem("cart");
+        updateCartCount();
+        displayCart();
+      }
+
+      updateCartCount();
+
+      document.querySelector(".cart-icon").addEventListener("click", openCart);
+
+      document.querySelectorAll(".product button").forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+          let productName =
+            document.querySelectorAll(".product h3")[index].innerText;
+          let productPrice =
+            document.querySelectorAll(".product p")[index * 2].innerText;
+
+          cart.push({ name: productName, price: productPrice });
+          localStorage.setItem("cart", JSON.stringify(cart));
+          updateCartCount();
+        });
+      });
+    </script>
+    <script>
+      document.getElementById("darkModeToggle").onclick = function () {
+        document.body.classList.toggle("dark");
+      };
+    </script>
+    <!-- Cart Popup -->
+    <div id="cartPopup" class="cart-popup">
+      <div class="cart-content">
+        <h2>سلة المشتريات 🛒</h2>
+        <div id="cartItems"></div>
+        <h3 id="totalPrice"></h3>
+        <button onclick="clearCart()">مسح السلة</button>
+        <button onclick="closeCart()">اغلاق</button>
+      </div>
+    </div>
+  </body>
+</html>
